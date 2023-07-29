@@ -1,0 +1,355 @@
+{
+	"info": {
+		"_postman_id": "b060e00a-14ff-4430-94df-c1ff17ab596d",
+		"name": "Swagger Petstore",
+		"description": "This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "pet",
+			"item": [
+				{
+					"name": "Finds Pets by status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/*\r",
+									"Caso de prueba 3: \r",
+									"Guarda ejemplos de todas las posibles respuestas de pet/findbystatus.\r",
+									"\r",
+									"Nota: La solución que propongo es crear un fichero json externo con los diferentes valores del status y utilizar la opción Runner. Con esto garantizo un loop que haga la petición con cada uno de los valores del status.\r",
+									"    Para guardar las respuestas de cada petición de búsqueda por status, cree tres variables de ambiente, que se setean en cada petición según el valor del status \r",
+									"    \r",
+									"    variables de ambientes\r",
+									"    1. responseFindByStatusAvailable\r",
+									"    2. responseFindByStatusPending\r",
+									"    3. responseFindByStatusSold\r",
+									"\r",
+									"    nombre del fichero json\r",
+									"    valores_status.json\r",
+									"    \r",
+									"    estructura del fichero json\r",
+									"    [\r",
+									"        {\r",
+									"            \"status\": \"available\"\r",
+									"        },\r",
+									"        {\r",
+									"            \"status\": \"pending\"\r",
+									"        },\r",
+									"        {\r",
+									"            \"status\": \"sold\"\r",
+									"        }\r",
+									"    ]\r",
+									"*/ \r",
+									"\r",
+									"var jsonData = JSON.stringify(pm.response.json()) ;\r",
+									"//console.log(pm.variables.get(\"status\"));\r",
+									"pm.test(\"Guardar respuestas de pet/findbystatus\", () => {\r",
+									"  switch (pm.variables.get(\"status\")) { \r",
+									"    case \"available\":\r",
+									"     pm.environment.set(\"responseFindByStatusAvailable\", jsonData);\r",
+									"     console.log(pm.variables.get(\"responseFindByStatusAvailable\"));\r",
+									"     break;\r",
+									"    case \"pending\":\r",
+									"     pm.environment.set(\"responseFindByStatusPending\", jsonData);\r",
+									"     console.log(pm.variables.get(\"responseFindByStatusPending\"));\r",
+									"     break;\r",
+									"    case \"sold\" :\r",
+									"     pm.environment.set(\"responseFindByStatusSold\", jsonData);\r",
+									"     console.log(pm.variables.get(\"responseFindByStatusSold\"));\r",
+									"     break;\r",
+									"    default:\r",
+									"     console.log(\"Error con el valor del status\");\r",
+									"  }\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, application/xml"
+							}
+						],
+						"url": {
+							"raw": "https://petstore.swagger.io/v2/pet/findByStatus?status={{status}}",
+							"protocol": "https",
+							"host": [
+								"petstore",
+								"swagger",
+								"io"
+							],
+							"path": [
+								"v2",
+								"pet",
+								"findByStatus"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "{{status}}"
+								}
+							]
+						},
+						"description": "Multiple status values can be provided with comma separated strings"
+					},
+					"response": []
+				}
+			],
+			"description": "Folder for pet"
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "Get user by user name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/*\r",
+									"Caso de prueba 2: \r",
+									"Consulta el usuario creado a través de variable global.\r",
+									"\r",
+									"Variable global\r",
+									"1. userName\r",
+									"*/\r",
+									"\r",
+									"/*\r",
+									"Caso de prueba 5: \r",
+									"Incluye en el GET de usuario, los tests que consideres necesarios.\r",
+									"\r",
+									"*/\r",
+									"\r",
+									"//Declarar variable\r",
+									"var data = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Validar código de status OK\", function () {\r",
+									"    pm.response.to.have.status(\"OK\");\r",
+									"});\r",
+									"pm.test(\"Validar tiempo de respuesta menor que 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									"\r",
+									"/*\r",
+									"Se puede hacer un test para validar todos los headers presentes en la respuesta o hacer un test por cada header que se quiere validar \r",
+									"*/\r",
+									"pm.test(\"Validar los headers presentes en la respuesta\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"    pm.response.to.have.header(\"Date\");\r",
+									"    pm.response.to.have.header(\"Transfer-Encoding\");\r",
+									"    pm.response.to.have.header(\"Connection\");\r",
+									"    pm.response.to.have.header(\"Access-Control-Allow-Origin\");\r",
+									"    pm.response.to.have.header(\"Access-Control-Allow-Methods\");\r",
+									"    pm.response.to.have.header(\"Access-Control-Allow-Headers\");\r",
+									"    pm.response.to.have.header(\"Server\");\r",
+									"\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Validar que el valor del header Content-Type es application/json\", () => {\r",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+									"});\r",
+									"\r",
+									"/*\r",
+									"Se puede hacer un test para validar todos los valores del usuario encontrado o hacer un test por cada valor del usuario encontrado\r",
+									"*/\r",
+									"pm.test(\"Validar los valores del usuario encontrado\", function () {\r",
+									"    \r",
+									"    pm.expect(data.id).to.eql(parseInt(pm.environment.get(\"id\")));\r",
+									"    pm.expect(data.username).to.eql(pm.globals.get(\"userName\"));\r",
+									"    pm.expect(data.firstName).to.eql(pm.environment.get(\"firstName\"));\r",
+									"    pm.expect(data.lastName).to.eql(pm.environment.get(\"lastName\"));\r",
+									"    pm.expect(data.email).to.eql(pm.environment.get(\"email\"));\r",
+									"    pm.expect(data.password).to.eql(pm.environment.get(\"password\"));\r",
+									"    pm.expect(data.phone).to.eql(pm.environment.get(\"phone\"));\r",
+									"    pm.expect(data.userStatus).to.eql(parseInt(pm.environment.get(\"userStatus\")));\r",
+									"});\r",
+									"\r",
+									"/*\r",
+									"Se puede hacer un test para validar los tipos de datos de la respuesta o hacer un test para validar el tipo de dato por cada valor de la respuesta \r",
+									"*/\r",
+									"\r",
+									"pm.test(\"Validar los tipos de datos de la respuesta\", () => {\r",
+									"  pm.expect(data).to.be.an(\"object\");\r",
+									"  pm.expect(data.id).to.be.a(\"number\");\r",
+									"  pm.expect(data.username).to.be.a(\"string\");\r",
+									"  pm.expect(data.firstName).to.be.a(\"string\");\r",
+									"  pm.expect(data.lastName).to.be.a(\"string\");\r",
+									"  pm.expect(data.email).to.be.a(\"string\");\r",
+									"  pm.expect(data.password).to.be.a(\"string\");\r",
+									"  pm.expect(data.phone).to.be.a(\"string\");\r",
+									"  pm.expect(data.userStatus).to.be.a(\"number\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, application/xml"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/v2/user/{{userName}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v2",
+								"user",
+								"{{userName}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Updated user",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"/*\r",
+									"Caso de prueba 4: \r",
+									"Actualiza el usuario 1047 con la contraseña 654321 y el teléfono 600000000.\r",
+									"\r",
+									"Nota: La solución que propongo es setear antes de realizar la petición las variables password y phone. El resto de las variables se mantienen con su valor actual\r",
+									"*/\r",
+									"\r",
+									"pm.environment.set(\"password\", \"654321\");\r",
+									"pm.environment.set(\"phone\", \"600000000\");\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, application/xml"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": {{id}},\r\n  \"username\": \"{{userName}}\",\r\n  \"firstName\": \"{{firstName}}\",\r\n  \"lastName\": \"{{lastName}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"phone\": \"{{phone}}\",\r\n  \"userStatus\": {{userStatus}}\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v2/user/{{userName}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v2",
+								"user",
+								"{{userName}}"
+							]
+						},
+						"description": "This can only be done by the logged in user."
+					},
+					"response": []
+				},
+				{
+					"name": "Create user",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"/*\r",
+									"Caso de prueba 1: \r",
+									"Crea el usuario 1047 maricarmen_perez con el resto de datos con variables dinámicas (pre-request script).\r",
+									"\r",
+									"Variables de ambiente\r",
+									"1. firstName\r",
+									"2. lastName\r",
+									"3. email\r",
+									"4. password\r",
+									"5. phone\r",
+									"6. userStatus\r",
+									"*/ \r",
+									"\r",
+									"pm.environment.set(\"firstName\", pm.variables.replaceIn(\"{{$randomFirstName}}\"));\r",
+									"pm.environment.set(\"lastName\", pm.variables.replaceIn(\"{{$randomLastName}}\"));\r",
+									"pm.environment.set(\"email\", pm.variables.replaceIn(\"{{$randomEmail}}\"));\r",
+									"pm.environment.set(\"password\", pm.variables.replaceIn(\"{{$randomPassword}}\"));\r",
+									"pm.environment.set(\"phone\", pm.variables.replaceIn(\"{{$randomPhoneNumber}}\"));\r",
+									"pm.environment.set(\"userStatus\", pm.variables.replaceIn(\"{{$randomInt}}\"));\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, application/xml"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 1047,\r\n  \"username\": \"maricarmen_perez\",\r\n  \"firstName\": \"{{firstName}}\",\r\n  \"lastName\": \"{{lastName}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"phone\": \"{{phone}}\",\r\n  \"userStatus\": {{userStatus}}\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v2/user",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v2",
+								"user"
+							]
+						},
+						"description": "This can only be done by the logged in user."
+					},
+					"response": []
+				}
+			],
+			"description": "Folder for user"
+		}
+	]
+}
